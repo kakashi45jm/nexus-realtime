@@ -14,6 +14,7 @@ import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthRegisterRouteImport } from './routes/api/auth/register'
 import { Route as ApiAuthUpdateProfileRouteImport } from './routes/api/auth/update-profile'
+import { Route as ApiDmsPartnerIdRouteImport } from './routes/api/dms/$partnerId'
 import { Route as ApiRoomsRoomIdMessagesRouteImport } from './routes/api/rooms/$roomId/messages'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const ApiAuthUpdateProfileRoute = ApiAuthUpdateProfileRouteImport.update({
   path: '/api/auth/update-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDmsPartnerIdRoute = ApiDmsPartnerIdRouteImport.update({
+  id: '/api/dms/$partnerId',
+  path: '/api/dms/$partnerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiRoomsRoomIdMessagesRoute = ApiRoomsRoomIdMessagesRouteImport.update({
   id: '/api/rooms/$roomId/messages',
   path: '/api/rooms/$roomId/messages',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
   '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
   '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
   '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/api/auth/me'
     | '/api/auth/register'
     | '/api/auth/update-profile'
+    | '/api/dms/$partnerId'
     | '/api/rooms/$roomId/messages'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/api/auth/me'
     | '/api/auth/register'
     | '/api/auth/update-profile'
+    | '/api/dms/$partnerId'
     | '/api/rooms/$roomId/messages'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/api/auth/me'
     | '/api/auth/register'
     | '/api/auth/update-profile'
+    | '/api/dms/$partnerId'
     | '/api/rooms/$roomId/messages'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   ApiAuthMeRoute: typeof ApiAuthMeRoute
   ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute
   ApiAuthUpdateProfileRoute: typeof ApiAuthUpdateProfileRoute
+  ApiDmsPartnerIdRoute: typeof ApiDmsPartnerIdRoute
   ApiRoomsRoomIdMessagesRoute: typeof ApiRoomsRoomIdMessagesRoute
 }
 
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthUpdateProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/dms/$partnerId': {
+      id: '/api/dms/$partnerId'
+      path: '/api/dms/$partnerId'
+      fullPath: '/api/dms/$partnerId'
+      preLoaderRoute: typeof ApiDmsPartnerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/rooms/$roomId/messages': {
       id: '/api/rooms/$roomId/messages'
       path: '/api/rooms/$roomId/messages'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthMeRoute: ApiAuthMeRoute,
   ApiAuthRegisterRoute: ApiAuthRegisterRoute,
   ApiAuthUpdateProfileRoute: ApiAuthUpdateProfileRoute,
+  ApiDmsPartnerIdRoute: ApiDmsPartnerIdRoute,
   ApiRoomsRoomIdMessagesRoute: ApiRoomsRoomIdMessagesRoute,
 }
 export const routeTree = rootRouteImport

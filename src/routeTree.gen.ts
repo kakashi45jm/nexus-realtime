@@ -14,6 +14,7 @@ import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthRegisterRouteImport } from './routes/api/auth/register'
 import { Route as ApiAuthUpdateProfileRouteImport } from './routes/api/auth/update-profile'
+import { Route as ApiRoomsRoomIdMessagesRouteImport } from './routes/api/rooms/$roomId/messages'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ApiAuthUpdateProfileRoute = ApiAuthUpdateProfileRouteImport.update({
   path: '/api/auth/update-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRoomsRoomIdMessagesRoute = ApiRoomsRoomIdMessagesRouteImport.update({
+  id: '/api/rooms/$roomId/messages',
+  path: '/api/rooms/$roomId/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,6 +70,7 @@ export interface FileRoutesById {
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,6 +80,7 @@ export interface FileRouteTypes {
     | '/api/auth/me'
     | '/api/auth/register'
     | '/api/auth/update-profile'
+    | '/api/rooms/$roomId/messages'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -78,6 +88,7 @@ export interface FileRouteTypes {
     | '/api/auth/me'
     | '/api/auth/register'
     | '/api/auth/update-profile'
+    | '/api/rooms/$roomId/messages'
   id:
     | '__root__'
     | '/'
@@ -85,6 +96,7 @@ export interface FileRouteTypes {
     | '/api/auth/me'
     | '/api/auth/register'
     | '/api/auth/update-profile'
+    | '/api/rooms/$roomId/messages'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,6 +105,7 @@ export interface RootRouteChildren {
   ApiAuthMeRoute: typeof ApiAuthMeRoute
   ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute
   ApiAuthUpdateProfileRoute: typeof ApiAuthUpdateProfileRoute
+  ApiRoomsRoomIdMessagesRoute: typeof ApiRoomsRoomIdMessagesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -132,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthUpdateProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/rooms/$roomId/messages': {
+      id: '/api/rooms/$roomId/messages'
+      path: '/api/rooms/$roomId/messages'
+      fullPath: '/api/rooms/$roomId/messages'
+      preLoaderRoute: typeof ApiRoomsRoomIdMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -141,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthMeRoute: ApiAuthMeRoute,
   ApiAuthRegisterRoute: ApiAuthRegisterRoute,
   ApiAuthUpdateProfileRoute: ApiAuthUpdateProfileRoute,
+  ApiRoomsRoomIdMessagesRoute: ApiRoomsRoomIdMessagesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

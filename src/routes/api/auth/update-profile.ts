@@ -52,7 +52,7 @@ export const Route = createFileRoute("/api/auth/update-profile")({
           delete merged["id"];
           const { error } = await supabaseAdmin
             .from("app_users")
-            .update({ profile: merged, updated_at: new Date().toISOString() })
+            .update({ profile: merged as never, updated_at: new Date().toISOString() })
             .eq("id", existing.id);
           if (error) return json({ error: "Failed to update profile." }, 500);
           return json({
@@ -85,7 +85,7 @@ export const Route = createFileRoute("/api/auth/update-profile")({
           id,
           username: fallbackUsername,
           password_hash: "",
-          profile,
+          profile: profile as never,
         });
         if (error) return json({ error: "Failed to update profile." }, 500);
 

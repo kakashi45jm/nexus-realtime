@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthRegisterRouteImport } from './routes/api/auth/register'
+import { Route as ApiAuthUpdateProfileRouteImport } from './routes/api/auth/update-profile'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const ApiAuthRegisterRoute = ApiAuthRegisterRouteImport.update({
   path: '/api/auth/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthUpdateProfileRoute = ApiAuthUpdateProfileRouteImport.update({
+  id: '/api/auth/update-profile',
+  path: '/api/auth/update-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
+  '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
+  '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,14 +61,30 @@ export interface FileRoutesById {
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/me': typeof ApiAuthMeRoute
   '/api/auth/register': typeof ApiAuthRegisterRoute
+  '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/auth/login' | '/api/auth/me' | '/api/auth/register'
+  fullPaths:
+    | '/'
+    | '/api/auth/login'
+    | '/api/auth/me'
+    | '/api/auth/register'
+    | '/api/auth/update-profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/auth/login' | '/api/auth/me' | '/api/auth/register'
+  to:
+    | '/'
+    | '/api/auth/login'
+    | '/api/auth/me'
+    | '/api/auth/register'
+    | '/api/auth/update-profile'
   id:
-    '__root__' | '/' | '/api/auth/login' | '/api/auth/me' | '/api/auth/register'
+    | '__root__'
+    | '/'
+    | '/api/auth/login'
+    | '/api/auth/me'
+    | '/api/auth/register'
+    | '/api/auth/update-profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -68,6 +92,7 @@ export interface RootRouteChildren {
   ApiAuthLoginRoute: typeof ApiAuthLoginRoute
   ApiAuthMeRoute: typeof ApiAuthMeRoute
   ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute
+  ApiAuthUpdateProfileRoute: typeof ApiAuthUpdateProfileRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -100,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/update-profile': {
+      id: '/api/auth/update-profile'
+      path: '/api/auth/update-profile'
+      fullPath: '/api/auth/update-profile'
+      preLoaderRoute: typeof ApiAuthUpdateProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -108,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthLoginRoute: ApiAuthLoginRoute,
   ApiAuthMeRoute: ApiAuthMeRoute,
   ApiAuthRegisterRoute: ApiAuthRegisterRoute,
+  ApiAuthUpdateProfileRoute: ApiAuthUpdateProfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

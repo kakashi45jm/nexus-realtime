@@ -297,6 +297,9 @@ export class RealtimeSocket {
   }
 
   private async joinRoom(roomId: string, user: AnyMsg) {
+    if (this.roomId === roomId && this.user?.id === user?.id && this.roomChannel) {
+      return;
+    }
     this.user = user;
     this.roomId = roomId;
 

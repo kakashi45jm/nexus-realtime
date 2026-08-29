@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiAiTranslateRouteImport } from './routes/api/ai/translate'
+import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
+import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
+import { Route as ApiAuthRegisterRouteImport } from './routes/api/auth/register'
+import { Route as ApiAuthUpdateProfileRouteImport } from './routes/api/auth/update-profile'
+import { Route as ApiDmsPartnerIdRouteImport } from './routes/api/dms/$partnerId'
+import { Route as ApiRoomsIndexRouteImport } from './routes/api/rooms/index'
+import { Route as ApiRoomsRoomIdMessagesRouteImport } from './routes/api/rooms/$roomId/messages'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAiTranslateRoute = ApiAiTranslateRouteImport.update({
+  id: '/api/ai/translate',
+  path: '/api/ai/translate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
+  id: '/api/auth/login',
+  path: '/api/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthMeRoute = ApiAuthMeRouteImport.update({
+  id: '/api/auth/me',
+  path: '/api/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRegisterRoute = ApiAuthRegisterRouteImport.update({
+  id: '/api/auth/register',
+  path: '/api/auth/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthUpdateProfileRoute = ApiAuthUpdateProfileRouteImport.update({
+  id: '/api/auth/update-profile',
+  path: '/api/auth/update-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDmsPartnerIdRoute = ApiDmsPartnerIdRouteImport.update({
+  id: '/api/dms/$partnerId',
+  path: '/api/dms/$partnerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRoomsIndexRoute = ApiRoomsIndexRouteImport.update({
+  id: '/api/rooms/',
+  path: '/api/rooms/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRoomsRoomIdMessagesRoute = ApiRoomsRoomIdMessagesRouteImport.update({
+  id: '/api/rooms/$roomId/messages',
+  path: '/api/rooms/$roomId/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/ai/translate': typeof ApiAiTranslateRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/auth/register': typeof ApiAuthRegisterRoute
+  '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
+  '/api/rooms/': typeof ApiRoomsIndexRoute
+  '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/ai/translate': typeof ApiAiTranslateRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/auth/register': typeof ApiAuthRegisterRoute
+  '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
+  '/api/rooms': typeof ApiRoomsIndexRoute
+  '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/ai/translate': typeof ApiAiTranslateRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/auth/register': typeof ApiAuthRegisterRoute
+  '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
+  '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
+  '/api/rooms/': typeof ApiRoomsIndexRoute
+  '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/api/ai/translate'
+    | '/api/auth/login'
+    | '/api/auth/me'
+    | '/api/auth/register'
+    | '/api/auth/update-profile'
+    | '/api/dms/$partnerId'
+    | '/api/rooms/'
+    | '/api/rooms/$roomId/messages'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/api/ai/translate'
+    | '/api/auth/login'
+    | '/api/auth/me'
+    | '/api/auth/register'
+    | '/api/auth/update-profile'
+    | '/api/dms/$partnerId'
+    | '/api/rooms'
+    | '/api/rooms/$roomId/messages'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/ai/translate'
+    | '/api/auth/login'
+    | '/api/auth/me'
+    | '/api/auth/register'
+    | '/api/auth/update-profile'
+    | '/api/dms/$partnerId'
+    | '/api/rooms/'
+    | '/api/rooms/$roomId/messages'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiAiTranslateRoute: typeof ApiAiTranslateRoute
+  ApiAuthLoginRoute: typeof ApiAuthLoginRoute
+  ApiAuthMeRoute: typeof ApiAuthMeRoute
+  ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute
+  ApiAuthUpdateProfileRoute: typeof ApiAuthUpdateProfileRoute
+  ApiDmsPartnerIdRoute: typeof ApiDmsPartnerIdRoute
+  ApiRoomsIndexRoute: typeof ApiRoomsIndexRoute
+  ApiRoomsRoomIdMessagesRoute: typeof ApiRoomsRoomIdMessagesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ai/translate': {
+      id: '/api/ai/translate'
+      path: '/api/ai/translate'
+      fullPath: '/api/ai/translate'
+      preLoaderRoute: typeof ApiAiTranslateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/login': {
+      id: '/api/auth/login'
+      path: '/api/auth/login'
+      fullPath: '/api/auth/login'
+      preLoaderRoute: typeof ApiAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/me': {
+      id: '/api/auth/me'
+      path: '/api/auth/me'
+      fullPath: '/api/auth/me'
+      preLoaderRoute: typeof ApiAuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/register': {
+      id: '/api/auth/register'
+      path: '/api/auth/register'
+      fullPath: '/api/auth/register'
+      preLoaderRoute: typeof ApiAuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/update-profile': {
+      id: '/api/auth/update-profile'
+      path: '/api/auth/update-profile'
+      fullPath: '/api/auth/update-profile'
+      preLoaderRoute: typeof ApiAuthUpdateProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/dms/$partnerId': {
+      id: '/api/dms/$partnerId'
+      path: '/api/dms/$partnerId'
+      fullPath: '/api/dms/$partnerId'
+      preLoaderRoute: typeof ApiDmsPartnerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/rooms/': {
+      id: '/api/rooms/'
+      path: '/api/rooms'
+      fullPath: '/api/rooms/'
+      preLoaderRoute: typeof ApiRoomsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/rooms/$roomId/messages': {
+      id: '/api/rooms/$roomId/messages'
+      path: '/api/rooms/$roomId/messages'
+      fullPath: '/api/rooms/$roomId/messages'
+      preLoaderRoute: typeof ApiRoomsRoomIdMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiAiTranslateRoute: ApiAiTranslateRoute,
+  ApiAuthLoginRoute: ApiAuthLoginRoute,
+  ApiAuthMeRoute: ApiAuthMeRoute,
+  ApiAuthRegisterRoute: ApiAuthRegisterRoute,
+  ApiAuthUpdateProfileRoute: ApiAuthUpdateProfileRoute,
+  ApiDmsPartnerIdRoute: ApiDmsPartnerIdRoute,
+  ApiRoomsIndexRoute: ApiRoomsIndexRoute,
+  ApiRoomsRoomIdMessagesRoute: ApiRoomsRoomIdMessagesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

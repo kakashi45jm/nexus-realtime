@@ -8,7 +8,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
-type AnyMsg = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyMsg = any;
 
 const GLOBAL_TOPIC = "livecall-global";
 

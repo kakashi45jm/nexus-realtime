@@ -41,12 +41,16 @@ export function json(body: unknown, status = 200): Response {
 export function publicProfile(row: {
   id: string;
   username: string;
-  profile: Record<string, unknown> | null;
+  profile: unknown;
 }) {
+  const profile =
+    row.profile && typeof row.profile === "object" && !Array.isArray(row.profile)
+      ? (row.profile as Record<string, unknown>)
+      : {};
   return {
     id: row.id,
     username: row.username,
-    ...(row.profile ?? {}),
+    ...profile,
   };
 }
 

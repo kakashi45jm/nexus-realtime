@@ -15,6 +15,7 @@ import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthRegisterRouteImport } from './routes/api/auth/register'
 import { Route as ApiAuthUpdateProfileRouteImport } from './routes/api/auth/update-profile'
 import { Route as ApiDmsPartnerIdRouteImport } from './routes/api/dms/$partnerId'
+import { Route as ApiRoomsIndexRouteImport } from './routes/api/rooms/index'
 import { Route as ApiRoomsRoomIdMessagesRouteImport } from './routes/api/rooms/$roomId/messages'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +48,11 @@ const ApiDmsPartnerIdRoute = ApiDmsPartnerIdRouteImport.update({
   path: '/api/dms/$partnerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRoomsIndexRoute = ApiRoomsIndexRouteImport.update({
+  id: '/api/rooms/',
+  path: '/api/rooms/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiRoomsRoomIdMessagesRoute = ApiRoomsRoomIdMessagesRouteImport.update({
   id: '/api/rooms/$roomId/messages',
   path: '/api/rooms/$roomId/messages',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
   '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
+  '/api/rooms/': typeof ApiRoomsIndexRoute
   '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
   '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
+  '/api/rooms': typeof ApiRoomsIndexRoute
   '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/api/auth/register': typeof ApiAuthRegisterRoute
   '/api/auth/update-profile': typeof ApiAuthUpdateProfileRoute
   '/api/dms/$partnerId': typeof ApiDmsPartnerIdRoute
+  '/api/rooms/': typeof ApiRoomsIndexRoute
   '/api/rooms/$roomId/messages': typeof ApiRoomsRoomIdMessagesRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/api/auth/register'
     | '/api/auth/update-profile'
     | '/api/dms/$partnerId'
+    | '/api/rooms/'
     | '/api/rooms/$roomId/messages'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/api/auth/register'
     | '/api/auth/update-profile'
     | '/api/dms/$partnerId'
+    | '/api/rooms'
     | '/api/rooms/$roomId/messages'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/api/auth/register'
     | '/api/auth/update-profile'
     | '/api/dms/$partnerId'
+    | '/api/rooms/'
     | '/api/rooms/$roomId/messages'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   ApiAuthRegisterRoute: typeof ApiAuthRegisterRoute
   ApiAuthUpdateProfileRoute: typeof ApiAuthUpdateProfileRoute
   ApiDmsPartnerIdRoute: typeof ApiDmsPartnerIdRoute
+  ApiRoomsIndexRoute: typeof ApiRoomsIndexRoute
   ApiRoomsRoomIdMessagesRoute: typeof ApiRoomsRoomIdMessagesRoute
 }
 
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDmsPartnerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/rooms/': {
+      id: '/api/rooms/'
+      path: '/api/rooms'
+      fullPath: '/api/rooms/'
+      preLoaderRoute: typeof ApiRoomsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/rooms/$roomId/messages': {
       id: '/api/rooms/$roomId/messages'
       path: '/api/rooms/$roomId/messages'
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthRegisterRoute: ApiAuthRegisterRoute,
   ApiAuthUpdateProfileRoute: ApiAuthUpdateProfileRoute,
   ApiDmsPartnerIdRoute: ApiDmsPartnerIdRoute,
+  ApiRoomsIndexRoute: ApiRoomsIndexRoute,
   ApiRoomsRoomIdMessagesRoute: ApiRoomsRoomIdMessagesRoute,
 }
 export const routeTree = rootRouteImport

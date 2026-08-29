@@ -13,6 +13,7 @@ import { InviteModal } from './components/InviteModal';
 import { LoginForm } from './components/LoginForm';
 import { ProfileModal } from './components/ProfileModal';
 import { UserAvatar } from './components/UserAvatar';
+import { RealtimeSocket } from './realtime/socket';
 import { Menu, X, Radio, Tablet, Sparkles, CheckCircle, Volume2, Cpu, LogOut } from 'lucide-react';
 
 const INITIAL_COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4'];
@@ -121,7 +122,7 @@ export default function App() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
 
   // WebSocket Ref
-  const wsRef = useRef<WebSocket | null>(null);
+  const wsRef = useRef<RealtimeSocket | null>(null);
   const reconnectTimerRef = useRef<any>(null);
   const pingIntervalRef = useRef<any>(null);
 
@@ -171,11 +172,8 @@ export default function App() {
       return;
     }
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-
     try {
-      const ws = new WebSocket(wsUrl);
+      const ws = new RealtimeSocket();
       wsRef.current = ws;
 
       ws.onopen = () => {
@@ -196,7 +194,7 @@ export default function App() {
         }, 20000);
       };
 
-      ws.onmessage = (event) => {
+      ws.onmessage = (event: { data: string }) => {
         try {
           const msg: WSMessage = JSON.parse(event.data);
 

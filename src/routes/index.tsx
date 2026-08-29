@@ -1,24 +1,52 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, ClientOnly } from "@tanstack/react-router";
+import { Suspense, lazy } from "react";
+import { ErrorBoundary } from "@/legacy/components/ErrorBoundary";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const App = lazy(() => import("@/legacy/App"));
+
+const TITLE = "LiveCall & Web Chat — Legacy iOS Friendly Calls";
+const DESCRIPTION =
+  "Real-time 1v1 and group chat, audio/video calls with legacy iOS compatibility, AI translation, media sharing, and admin moderation.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Loading() {
   return (
     <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        background: "#0f172a",
+        color: "#e2e8f0",
+      }}
     >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+      Loading LiveCall…
     </div>
+  );
+}
+
+function Index() {
+  return (
+    <ClientOnly fallback={<Loading />}>
+      <ErrorBoundary>
+        <Suspense fallback={<Loading />}>
+          <App />
+        </Suspense>
+      </ErrorBoundary>
+    </ClientOnly>
   );
 }

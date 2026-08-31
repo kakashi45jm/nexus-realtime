@@ -83,17 +83,35 @@ export class RealtimeSocket {
     void channel.send({ type: "broadcast", event: "msg", payload });
   }
 
+  private peerChannels = new Map<string, Promise<RealtimeChannel>>();
+
+  private getPeerChannel(userId: string): Promise<RealtimeChannel> {
+    let pending = this.peerChannels.get(userId);
+    if (!pending) {
+      pending = new Promise<RealtimeChannel>((resolve) => {
+        const channel = supabase.channel(`livecall-user-${userId}`, {
+          config: { broadcast: { self: false } },
+        });
+        channel.subscribe((status) => {
+          if (status === "SUBSCRIBED") resolve(channel);
+        });
+      });
+      this.peerChannels.set(userId, pending);
+    }
+    return pending;
+  }
+
   private toUser(userId: string, payload: AnyMsg) {
+    if (!userId) return;
     if (userId === this.user?.id) {
       this.emit(payload);
       return;
     }
-    void supabase.channel(`livecall-user-${userId}`).send({
-      type: "broadcast",
-      event: "msg",
-      payload,
-    });
+    void this.getPeerChannel(userId).then((channel) =>
+      channel.send({ type: "broadcast", event: "msg", payload }),
+    );
   }
+
 
   private sysMessage(roomId: string, text: string, color = "#64748b") {
     return {

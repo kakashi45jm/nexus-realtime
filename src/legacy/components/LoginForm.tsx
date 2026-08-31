@@ -237,7 +237,11 @@ export function LoginForm({ initialRoomId, diagnostics, onLogin }: Props) {
           
           {/* Header Video Banner (Only the user provided video) */}
           <div className="relative w-full h-48 sm:h-56 bg-slate-950 p-6 flex flex-col justify-end overflow-hidden border-b border-pink-500/20">
+            {/* Gradient fallback so the banner never renders empty if the video can't play */}
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-700 via-fuchsia-700 to-indigo-800 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:18px_18px] pointer-events-none" />
             {/* Pinterest Video Loop */}
+
             <video
               src="/assets/login_video.mp4"
               autoPlay

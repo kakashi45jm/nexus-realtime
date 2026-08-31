@@ -39,6 +39,7 @@ export function LoginForm({ initialRoomId, diagnostics, onLogin }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [videoFailed, setVideoFailed] = useState(false);
 
   const deviceBadge = diagnostics.isiPadMini2Suspected
     ? 'iPad mini 2'

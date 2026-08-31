@@ -405,6 +405,11 @@ export class RealtimeSocket {
     for (const channel of channels) {
       if (channel) void supabase.removeChannel(channel);
     }
+    for (const pending of this.peerChannels.values()) {
+      void pending.then((channel) => supabase.removeChannel(channel));
+    }
+    this.peerChannels.clear();
+
     this.onclose?.();
   }
 }

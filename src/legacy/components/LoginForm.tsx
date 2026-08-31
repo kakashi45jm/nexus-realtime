@@ -253,10 +253,15 @@ export function LoginForm({ initialRoomId, diagnostics, onLogin }: Props) {
                 if (target.src !== 'https://v1.pinimg.com/videos/iht/expMp4/46/39/9d/46399d7d0929e1d3ccbcb1052c15d5d9_720w.mp4') {
                   target.src = 'https://v1.pinimg.com/videos/iht/expMp4/46/39/9d/46399d7d0929e1d3ccbcb1052c15d5d9_720w.mp4';
                   target.play().catch(() => {});
+                } else {
+                  setVideoFailed(true);
                 }
               }}
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-105 transition-opacity duration-700 opacity-90"
+              className={`absolute inset-0 w-full h-full object-cover pointer-events-none scale-105 transition-opacity duration-700 ${
+                videoFailed ? 'opacity-0' : 'opacity-90'
+              }`}
             />
+
             
             {/* Subtle Gradient & Cyber Vignette for crystal-clear readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#11131f] via-black/30 to-transparent pointer-events-none" />

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Pink Void Classic — Legacy Device Chat</title>
+<meta name="description" content="Lightweight classic chat mode for older iPads, iPhones and legacy Safari or Chrome browsers.">
+<style>
+* { -webkit-box-sizing: border-box; box-sizing: border-box; }
+html, body { margin:0; padding:0; height:100%; background:#0f172a; color:#e2e8f0;
+  font-family:-apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-text-size-adjust:100%; }
+a { color:#f472b6; }
+.wrap { height:100%; display:-webkit-box; display:-webkit-flex; display:flex;
+  -webkit-box-orient:vertical; -webkit-flex-direction:column; flex-direction:column; }
+.bar { background:#1e293b; border-bottom:1px solid #334155; padding:8px 10px;
+  display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-align:center; -webkit-align-items:center; align-items:center; }
+.bar h1 { font-size:16px; margin:0; color:#f472b6; -webkit-box-flex:1; -webkit-flex:1; flex:1; }
+.btn { background:#db2777; color:#fff; border:0; border-radius:8px; padding:9px 14px; font-size:15px; }
+.btn.alt { background:#334155; }
+.btn.sm { padding:6px 10px; font-size:13px; }
+.card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:14px; margin:12px; }
+input, select, textarea { width:100%; font-size:16px; padding:10px; border-radius:8px;
+  border:1px solid #475569; background:#0f172a; color:#e2e8f0; margin-bottom:10px; }
+.tabs { padding:8px 12px 0 12px; }
+.tabs .btn { margin-right:6px; }
+.list { overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.row { padding:10px 12px; border-bottom:1px solid #24324a; }
+.row.on { background:#312e42; }
+.name { font-weight:bold; }
+.dim { color:#94a3b8; font-size:12px; }
+#msgs { -webkit-box-flex:1; -webkit-flex:1; flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:10px; }
+.msg { margin-bottom:10px; }
+.bubble { display:inline-block; max-width:85%; padding:8px 11px; border-radius:12px;
+  background:#1e293b; border:1px solid #334155; word-wrap:break-word; }
+.mine { text-align:right; }
+.mine .bubble { background:#9d174d; border-color:#be185d; }
+.sys .bubble { background:#0b1220; color:#94a3b8; font-size:12px; }
+.compose { display:-webkit-box; display:-webkit-flex; display:flex; padding:8px; background:#1e293b; border-top:1px solid #334155; }
+.compose input { margin:0 8px 0 0; }
+.err { color:#fca5a5; font-size:13px; margin-bottom:8px; }
+.hide { display:none; }
+.pane { -webkit-box-flex:1; -webkit-flex:1; flex:1; display:-webkit-box; display:-webkit-flex; display:flex;
+  -webkit-box-orient:vertical; -webkit-flex-direction:column; flex-direction:column; overflow:hidden; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <h1>Pink Void <span class="dim">Classic</span></h1>
+    <span id="who" class="dim"></span>
+    <button id="logout" class="btn sm alt hide" style="margin-left:8px">Exit</button>
+  </div>
+
+  <!-- AUTH -->
+  <div id="auth" class="pane">
+    <div class="card">
+      <div class="dim" style="margin-bottom:10px">Legacy-friendly mode detected. Works on old iOS / Safari / Chrome.</div>
+      <div id="authErr" class="err"></div>
+      <input id="u" type="text" placeholder="Username" autocapitalize="off" autocorrect="off">
+      <input id="p" type="password" placeholder="Password">
+      <button id="login" class="btn" style="width:48%">Sign in</button>
+      <button id="reg" class="btn alt" style="width:48%; float:right">Register</button>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="pane hide">
+    <div class="tabs">
+      <button id="tabRooms" class="btn sm">Rooms</button>
+      <button id="tabDms" class="btn sm alt">Direct</button>
+      <button id="tabChat" class="btn sm alt">Chat</button>
+    </div>
+
+    <div id="rooms" class="list pane"></div>
+    <div id="dms" class="list pane hide"></div>
+
+    <div id="chat" class="pane hide">
+      <div class="row"><span id="chatTitle" class="name">Chat</span></div>
+      <div id="msgs"></div>
+      <div class="compose">
+        <input id="text" type="text" placeholder="Type a message">
+        <button id="send" class="btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+(function () {
+  var S = { user: null, mode: 'room', target: null, targetName: '', timer: null, lastKey: '' };
+
+  function $(id) { return document.getElementById(id); }
+  function show(el, yes) { el.className = yes ? el.className.replace(/\s*hide/g, '') : (el.className.indexOf('hide') < 0 ? el.className + ' hide' : el.className); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function req(method, url, body, cb) {
+    var x = new XMLHttpRequest();
+    x.open(method, url, true);
+    x.setRequestHeader('Content-Type', 'application/json');
+    x.onreadystatechange = function () {
+      if (x.readyState !== 4) return;
+      var data = {};
+      try { data = JSON.parse(x.responseText || '{}'); } catch (e) { data = {}; }
+      cb(x.status >= 200 && x.status < 300, data);
+    };
+    x.send(body ? JSON.stringify(body) : null);
+  }
+
+  function store(k, v) {
+    try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; }
+  }
+
+  /* ---------- auth ---------- */
+  function auth(path) {
+    var username = $('u').value, password = $('p').value;
+    $('authErr').innerHTML = '';
+    if (!username || !password) { $('authErr').innerHTML = 'Username and password are required.'; return; }
+    req('POST', '/api/auth/' + path, { username: username, password: password, name: username }, function (ok, d) {
+      if (!ok || !d.user) { $('authErr').innerHTML = esc(d.error || 'Sign in failed.'); return; }
+      S.user = d.user;
+      store('pv_classic_user', JSON.stringify(d.user));
+      start();
+    });
+  }
+
+  function start() {
+    show($('auth'), false); show($('app'), true); show($('logout'), true);
+    $('who').innerHTML = esc(S.user.name || S.user.username);
+    loadRooms(); loadUsers();
+    tab('rooms');
+  }
+
+  /* ---------- lists ---------- */
+  function loadRooms() {
+    req('GET', '/api/rooms', null, function (ok, d) {
+      var list = (d && d.rooms) || [], html = '', i;
+      if (!list.length) html = '<div class="row dim">No rooms yet.</div>';
+      for (i = 0; i < list.length; i++) {
+        html += '<div class="row" onclick="PV.openRoom(\'' + esc(list[i].id) + '\',\'' + esc(list[i].name) + '\')">' +
+          '<div class="name"># ' + esc(list[i].name) + '</div><div class="dim">Tap to open group chat</div></div>';
+      }
+      $('rooms').innerHTML = html;
+    });
+  }
+
+  function loadUsers() {
+    req('GET', '/api/users', null, function (ok, d) {
+      var list = (d && d.users) || [], html = '', i, u;
+      for (i = 0; i < list.length; i++) {
+        u = list[i];
+        if (S.user && u.id === S.user.id) continue;
+        html += '<div class="row" onclick="PV.openDm(\'' + esc(u.id) + '\',\'' + esc(u.name) + '\')">' +
+          '<div class="name">' + esc(u.name) + (u.isAdmin ? ' <span class="dim">ADMIN</span>' : '') + '</div>' +
+          '<div class="dim">' + esc(u.handle) + '</div></div>';
+      }
+      $('dms').innerHTML = html || '<div class="row dim">No other members yet.</div>';
+    });
+  }
+
+  function tab(which) {
+    show($('rooms'), which === 'rooms');
+    show($('dms'), which === 'dms');
+    show($('chat'), which === 'chat');
+    $('tabRooms').className = 'btn sm' + (which === 'rooms' ? '' : ' alt');
+    $('tabDms').className = 'btn sm' + (which === 'dms' ? '' : ' alt');
+    $('tabChat').className = 'btn sm' + (which === 'chat' ? '' : ' alt');
+    if (which === 'rooms') loadRooms();
+    if (which === 'dms') loadUsers();
+  }
+
+  /* ---------- chat ---------- */
+  function historyUrl() {
+    return S.mode === 'room'
+      ? '/api/rooms/' + encodeURIComponent(S.target) + '/messages'
+      : '/api/dms/' + encodeURIComponent(S.target) + '?userId=' + encodeURIComponent(S.user.id);
+  }
+
+  function render(list) {
+    var html = '', i, m, mine, key = '';
+    for (i = 0; i < list.length; i++) {
+      m = list[i] || {}; key += (m.id || '') + ',';
+      mine = S.user && m.senderId === S.user.id;
+      html += '<div class="msg ' + (m.isSystem ? 'sys' : (mine ? 'mine' : '')) + '">' +
+        (m.isSystem ? '' : '<div class="dim">' + esc(m.senderName || 'Unknown') + '</div>') +
+        '<div class="bubble">' + esc(m.text || '') +
+        (m.attachment ? '<div class="dim">[attachment: ' + esc(m.attachment.type) + ']</div>' : '') +
+        '</div></div>';
+    }
+    if (key === S.lastKey) return;
+    S.lastKey = key;
+    $('msgs').innerHTML = html || '<div class="dim">No messages yet. Say hello!</div>';
+    $('msgs').scrollTop = $('msgs').scrollHeight;
+  }
+
+  function poll() {
+    if (!S.target) return;
+    req('GET', historyUrl(), null, function (ok, d) {
+      if (ok && d && d.messages) render(d.messages);
+    });
+  }
+
+  function openChat(mode, id, name) {
+    S.mode = mode; S.target = id; S.targetName = name; S.lastKey = '';
+    $('chatTitle').innerHTML = (mode === 'room' ? '# ' : '') + esc(name);
+    $('msgs').innerHTML = '<div class="dim">Loading…</div>';
+    tab('chat');
+    poll();
+    if (S.timer) clearInterval(S.timer);
+    S.timer = setInterval(poll, 2500);
+  }
+
+  function send() {
+    var text = $('text').value;
+    if (!text || !S.target) return;
+    $('text').value = '';
+    var msg = {
+      id: 'msg-' + (new Date()).getTime() + '-' + Math.floor(Math.random() * 100000),
+      roomId: S.mode === 'room' ? S.target : 'dm',
+      senderId: S.user.id,
+      senderName: S.user.name || S.user.username,
+      senderAvatarColor: S.user.avatarColor || '#ec4899',
+      senderIsAdmin: !!S.user.isAdmin,
+      senderIsVip: !!S.user.isVip,
+      senderIsVerified: !!S.user.isVerified,
+      text: text,
+      timestamp: (new Date()).getTime()
+    };
+    if (S.mode === 'dm') { msg.isPrivate = true; msg.recipientId = S.target; msg.recipientName = S.targetName; }
+    req('POST', S.mode === 'room'
+      ? '/api/rooms/' + encodeURIComponent(S.target) + '/messages'
+      : '/api/dms/' + encodeURIComponent(S.target), { message: msg }, function () { poll(); });
+  }
+
+  /* ---------- wiring ---------- */
+  $('login').onclick = function () { auth('login'); };
+  $('reg').onclick = function () { auth('register'); };
+  $('send').onclick = send;
+  $('text').onkeypress = function (e) { if ((e || window.event).keyCode === 13) send(); };
+  $('tabRooms').onclick = function () { tab('rooms'); };
+  $('tabDms').onclick = function () { tab('dms'); };
+  $('tabChat').onclick = function () { if (S.target) tab('chat'); };
+  $('logout').onclick = function () {
+    try { localStorage.removeItem('pv_classic_user'); } catch (e) {}
+    if (S.timer) clearInterval(S.timer);
+    S.user = null; S.target = null;
+    show($('app'), false); show($('logout'), false); show($('auth'), true);
+    $('who').innerHTML = '';
+  };
+
+  window.PV = {
+    openRoom: function (id, name) { openChat('room', id, name); },
+    openDm: function (id, name) { openChat('dm', id, name); }
+  };
+
+  var saved = store('pv_classic_user');
+  if (saved) { try { S.user = JSON.parse(saved); } catch (e) { S.user = null; } }
+  if (S.user && S.user.id) start();
+})();
+</script>
+</body>
+</html>

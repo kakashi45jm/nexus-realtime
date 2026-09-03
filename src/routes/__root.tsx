@@ -12,6 +12,22 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
+/**
+ * ES5-only inline script: redirects legacy devices (iOS 9/10/12 iPads, old
+ * Safari/Chrome that cannot run the modern bundle) to the lightweight
+ * /classic.html client. Must stay ES5 syntax so old parsers can read it.
+ */
+const LEGACY_DETECT_SCRIPT = `(function(){try{
+var q=window.location.search||'';
+if(q.indexOf('modern=1')>-1){try{localStorage.setItem('pv_force_modern','1');}catch(e){}return;}
+try{if(localStorage.getItem('pv_force_modern')==='1'&&q.indexOf('classic=1')<0)return;}catch(e){}
+var ua=navigator.userAgent||'';
+var m=ua.match(/OS (\\d+)[_.]/);
+var oldIos=(/iPad|iPhone|iPod/.test(ua)&&m&&parseInt(m[1],10)<13)?true:false;
+var oldEngine=!window.Promise||!window.fetch||!window.Symbol||!Array.prototype.includes||!window.Map;
+if(q.indexOf('classic=1')>-1||oldIos||oldEngine){window.location.replace('/classic.html');}
+}catch(e){}})();`;
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiUsersRouteImport } from './routes/api/users'
 import { Route as ApiAiTranslateRouteImport } from './routes/api/ai/translate'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
@@ -22,6 +23,11 @@ import { Route as ApiRoomsRoomIdMessagesRouteImport } from './routes/api/rooms/$
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUsersRoute = ApiUsersRouteImport.update({
+  id: '/api/users',
+  path: '/api/users',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAiTranslateRoute = ApiAiTranslateRouteImport.update({
@@ -67,6 +73,7 @@ const ApiRoomsRoomIdMessagesRoute = ApiRoomsRoomIdMessagesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/users': typeof ApiUsersRoute
   '/api/ai/translate': typeof ApiAiTranslateRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/me': typeof ApiAuthMeRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/users': typeof ApiUsersRoute
   '/api/ai/translate': typeof ApiAiTranslateRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/me': typeof ApiAuthMeRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/users': typeof ApiUsersRoute
   '/api/ai/translate': typeof ApiAiTranslateRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/me': typeof ApiAuthMeRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api/users'
     | '/api/ai/translate'
     | '/api/auth/login'
     | '/api/auth/me'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/users'
     | '/api/ai/translate'
     | '/api/auth/login'
     | '/api/auth/me'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/api/users'
     | '/api/ai/translate'
     | '/api/auth/login'
     | '/api/auth/me'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiUsersRoute: typeof ApiUsersRoute
   ApiAiTranslateRoute: typeof ApiAiTranslateRoute
   ApiAuthLoginRoute: typeof ApiAuthLoginRoute
   ApiAuthMeRoute: typeof ApiAuthMeRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/users': {
+      id: '/api/users'
+      path: '/api/users'
+      fullPath: '/api/users'
+      preLoaderRoute: typeof ApiUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ai/translate': {
@@ -217,6 +237,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiUsersRoute: ApiUsersRoute,
   ApiAiTranslateRoute: ApiAiTranslateRoute,
   ApiAuthLoginRoute: ApiAuthLoginRoute,
   ApiAuthMeRoute: ApiAuthMeRoute,
